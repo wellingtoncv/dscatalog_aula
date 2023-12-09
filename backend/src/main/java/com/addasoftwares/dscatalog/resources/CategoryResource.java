@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.addasoftwares.dscatalog.entities.Category;
+import com.addasoftwares.dscatalog.dto.CategoryDTO;
 import com.addasoftwares.dscatalog.services.CategoryService;
 
 // Esta classe implementa os recursos REST, é a API para a aplicação;
@@ -16,17 +16,15 @@ import com.addasoftwares.dscatalog.services.CategoryService;
 @RestController
 @RequestMapping(value = "/categories")
 public class CategoryResource {
-	
-	//1º endpoint da de Categories
+
+	// 1º endpoint da de Categories
 	@Autowired
 	private CategoryService service;
-	
+
 	@GetMapping
-	public ResponseEntity<List<Category>> findAll(){
-		List<Category> list = service.findAll();
+	public ResponseEntity<List<CategoryDTO>> findAll() {
+		List<CategoryDTO> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 	}
-	
-	
 
 }
