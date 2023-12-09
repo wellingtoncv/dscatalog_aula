@@ -1,14 +1,15 @@
 package com.addasoftwares.dscatalog.resources;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.addasoftwares.dscatalog.entities.Category;
+import com.addasoftwares.dscatalog.services.CategoryService;
 
 // Esta classe implementa os recursos REST, é a API para a aplicação;
 
@@ -17,13 +18,15 @@ import com.addasoftwares.dscatalog.entities.Category;
 public class CategoryResource {
 	
 	//1º endpoint da de Categories
+	@Autowired
+	private CategoryService service;
 	
 	@GetMapping
 	public ResponseEntity<List<Category>> findAll(){
-		List<Category> list = new ArrayList<>();
-		list.add(new Category(1L, "Books"));
-		list.add(new Category(2L, "Electronics"));
+		List<Category> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 	}
+	
+	
 
 }
