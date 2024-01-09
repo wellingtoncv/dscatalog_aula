@@ -21,9 +21,7 @@ import com.addasoftwares.dscatalog.services.exceptions.ResourceNotFoundException
 
 import jakarta.persistence.EntityNotFoundException;
 
-//Registra a classe como um componente que participará do sistema de inseção de dependências; 
-
-@Service
+@Service //Registra a classe como um componente que participará do sistema de inseção de dependências; 
 public class ProductService {
 
 	@Autowired
@@ -47,9 +45,7 @@ public class ProductService {
 
 	public Page<ProductDTO> findAllPaged(Pageable pageable) {
 		Page<Product> list = repository.findAll(pageable);
-
-		// utilizando a função de alta ordem e lambida
-		return list.map(x -> new ProductDTO(x));
+		return list.map(x -> new ProductDTO(x)); // utilizando a função de alta ordem e lambida
 	}
 
 	@Transactional(readOnly = true)
@@ -104,7 +100,8 @@ public class ProductService {
 		}
 		try {
 			repository.deleteById(id);
-		} catch (DataIntegrityViolationException e) {
+		} 
+		catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Falha de integridade referencial");
 		}
 	}
