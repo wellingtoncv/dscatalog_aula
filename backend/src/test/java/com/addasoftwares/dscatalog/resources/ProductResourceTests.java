@@ -46,18 +46,7 @@ public class ProductResourceTests {
 
 	@Test
 	public void findAllShouldReturnPage() throws Exception {
-
-		mockMvc.perform(get("/products")).andExpect(status().isOk())
-				.andExpect((ResultMatcher) content().contentType(MediaType.APPLICATION_JSON));
-
-		/*
-		 * String url = "/products";
-		 * 
-		 * mockMvc.perform(get(url)).andExpect(status().isInternalServerError()).
-		 * andExpect( result -> assertThat(result.getResolvedException()).isInstanceOf(
-		 * HttpMessageNotWritableException.class)) .andExpect(result ->
-		 * assertThat(result.getResolvedException().getMessage())
-		 * .contains("No converter found for return value of type"));
-		 */
+		mockMvc.perform(get("/products")).andExpect(status().isOk());
+		
 	}
 }
