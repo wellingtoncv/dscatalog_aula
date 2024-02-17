@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,10 +30,11 @@ public class User implements Serializable {
 	
 	// Construção da associação do relacionamento de muitos para muitos
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER) // Forçar trazer do banco o perfil do usuário 
 	@JoinTable(name = "tb_user_role", 
 	joinColumns = @JoinColumn(name = "user_id"),
 	inverseJoinColumns = @JoinColumn(name = "role_id"))
+	
 	private Set<Role> roles = new HashSet<>();	
 	
 	public User(){
