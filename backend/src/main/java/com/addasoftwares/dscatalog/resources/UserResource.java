@@ -20,6 +20,8 @@ import com.addasoftwares.dscatalog.dto.UserDTO;
 import com.addasoftwares.dscatalog.dto.UserInsertDTO;
 import com.addasoftwares.dscatalog.services.UserService;
 
+import jakarta.validation.Valid;
+
 // Esta classe implementa os recursos REST, é a API para a aplicação;
 
 @RestController
@@ -43,7 +45,7 @@ public class UserResource {
 	}
 
 	@PostMapping
-	public ResponseEntity<UserDTO> insert(@RequestBody UserInsertDTO dto) {
+	public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO dto) {
 		UserDTO newDto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(newDto.getId()).toUri();
@@ -51,7 +53,7 @@ public class UserResource {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO dto) {
+	public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserDTO dto) {
 		dto = service.update(id, dto);
 		return ResponseEntity.ok().body(dto);
 	}

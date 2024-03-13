@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +24,10 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service //Registra a classe como um componente que participará do sistema de inseção de dependências; 
 public class UserService {
-	
+/*
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-
+*/
 	@Autowired
 	private UserRepository repository;
 	
@@ -53,7 +52,8 @@ public class UserService {
 	public UserDTO insert(UserInsertDTO dto) {
 		User entity = new User();
 		copyDtoToEntity(dto, entity);
-		entity.setPassword(passwordEncoder.encode(dto.getPassword())); //encryptação da senha do User
+		//entity.setPassword(passwordEncoder.encode(dto.getPassword())); //encryptação da senha do User
+		entity.setPassword(dto.getPassword());
 		entity = repository.save(entity);
 		return new UserDTO(entity);
 	}
