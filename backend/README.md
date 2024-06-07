@@ -160,6 +160,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 }
 ```
+Filtro do H2 para Spring Security
+
+	@Bean
+	@Profile("test")
+	@Order(1)
+	public SecurityFilterChain h2SecurityFilterChain(HttpSecurity http) throws Exception {
+
+		http.securityMatcher(PathRequest.toH2Console()).csrf(csrf -> csrf.disable())
+				.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
+		return http.build();
+	}
+
 
 ## ConstraintValidator customizado
 #### Annotation
