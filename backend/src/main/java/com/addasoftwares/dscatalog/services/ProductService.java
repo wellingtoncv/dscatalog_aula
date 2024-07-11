@@ -1,10 +1,13 @@
 package com.addasoftwares.dscatalog.services;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -14,10 +17,12 @@ import com.addasoftwares.dscatalog.dto.CategoryDTO;
 import com.addasoftwares.dscatalog.dto.ProductDTO;
 import com.addasoftwares.dscatalog.entities.Category;
 import com.addasoftwares.dscatalog.entities.Product;
+import com.addasoftwares.dscatalog.projections.ProductProjection;
 import com.addasoftwares.dscatalog.repositories.CategoryRepository;
 import com.addasoftwares.dscatalog.repositories.ProductRepository;
 import com.addasoftwares.dscatalog.services.exceptions.DatabaseException;
 import com.addasoftwares.dscatalog.services.exceptions.ResourceNotFoundException;
+import com.addasoftwares.dscatalog.util.Utils;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -29,24 +34,13 @@ public class ProductService {
 	@Autowired
 	private CategoryRepository categoryRepository;
 
-	// Garantias das propriedades ASID pelo framwork;
-	/*
-	 * @Transactional(readOnly = true) public List<ProductDTO> findAll() {
-	 * List<Product> list = repository.findAll();
-	 * 
-	 * // utilizando a função de alta ordem e lambida return list.stream().map(x ->
-	 * new ProductDTO(x)).collect(Collectors.toList());
-	 * 
-	 * }
-	 */
-
+	
 	@Transactional(readOnly = true)
-	// public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
-
 	public Page<ProductDTO> findAllPaged(Pageable pageable) {
 		Page<Product> list = repository.findAll(pageable);
 		return list.map(x -> new ProductDTO(x)); // utilizando a função de alta ordem e lambida
 	}
+	
 
 	@Transactional(readOnly = true)
 	public ProductDTO findByid(Long id) {
@@ -105,5 +99,26 @@ public class ProductService {
 			throw new DatabaseException("Falha de integridade referencial");
 		}
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
+	public Page<ProductDTO> findAllPaged(String name, String categoryId, Pageable pageable) {
+		
+		List<Long> categoryIds = Arrays.asList();
+		if (!"0".equals(categoryId)) {
+			categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
+		}
+		
+		Page<ProductProjection> page = repository.searchProducts(categoryIds, name, pageable);
+		List<Long> productIds = page.map(x -> x.getId()).toList();
+		
+		List<Product> entities = repository.SearchProductWithCategories(productIds);
+		entities = (List<Product>) Utils.replace(page.getContent(), entities);
+		
+		List<ProductDTO> dtos = entities.stream().map(p -> new ProductDTO(p, p.getCategories())).toList();
+		
+		Page<ProductDTO> pageDto = new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
+		return pageDto;
+	}
+		
 }
