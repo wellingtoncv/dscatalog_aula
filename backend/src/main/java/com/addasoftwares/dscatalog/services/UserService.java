@@ -41,6 +41,8 @@ public class UserService implements UserDetailsService {
 	@Autowired
 	private RoleRepository roleRepository;
 	
+	@Autowired
+	private AuthService authService;
 
 	@Transactional(readOnly = true)
 		public Page<UserDTO> findAllPaged(Pageable pageable) {
@@ -48,6 +50,12 @@ public class UserService implements UserDetailsService {
 		return list.map(x -> new UserDTO(x)); // utilizando a função de alta ordem e lambida
 	}
 
+	@Transactional(readOnly = true)
+	public UserDTO findUserLogged() {
+		User entity = authService.authenticated();
+		return new UserDTO(entity);
+	}
+	
 	@Transactional(readOnly = true)
 	public UserDTO findByid(Long id) {
 		Optional<User> obj = repository.findById(id);
